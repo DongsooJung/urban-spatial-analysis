@@ -1,12 +1,44 @@
-numpy>=1.24
-pandas>=2.0
-geopandas>=0.14
-pysal>=24.1
-libpysal>=4.9
-spreg>=1.4
-esda>=2.5
-shapely>=2.0
-matplotlib>=3.8
-folium>=0.15
-scikit-learn>=1.3
-jupyter>=1.0
+# ============================================================
+# Urban Spatial Econometric Analysis — Python Dependencies
+# Python 3.11+
+# ============================================================
+
+# --- Core Spatial Econometrics (PySAL stack) ---
+libpysal>=4.8.0                # 공간가중행렬, 예제 데이터셋
+spreg>=1.4.0                   # SAR/SEM/SDM/GMM 추정기
+esda>=2.5.0                    # Moran's I, Geary's C, LISA
+mgwr>=2.1.2                    # Geographically Weighted Regression
+splot>=1.1.5                   # 공간분석 전용 시각화
+
+# --- Classical Econometrics ---
+statsmodels>=0.14.0
+linearmodels>=5.3              # 패널/IV 모형
+
+# --- Geospatial ---
+geopandas>=0.14.0
+shapely>=2.0.0
+pyproj>=3.6.0                  # 좌표계 변환
+rasterio>=1.3.0                # 래스터 데이터 (옵션)
+
+# --- Data ---
+pandas>=2.1.0
+numpy>=1.26.0
+scipy>=1.11.0
+pyarrow>=14.0.0                # Parquet 지원
+
+# --- Visualization ---
+matplotlib>=3.8.0
+seaborn>=0.13.0
+folium>=0.15.0
+contextily>=1.4.0              # 베이스맵 타일
+
+# --- Jupyter ---
+jupyter>=1.0.0
+ipykernel>=6.27.0
+nbformat>=5.9.0
+
+# --- Code Quality ---
+black>=23.12.0
+ruff>=0.1.9
+pytest>=7.4.0
+mypy>=1.7.0
