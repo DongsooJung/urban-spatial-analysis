@@ -45,10 +45,30 @@ def load_example(
         >>> gdf.columns.tolist()[:5]
         ['AREA', 'PERIMETER', 'COLUMBUS_', 'COLUMBUS_I', 'POLYID']
     """
-    raise NotImplementedError(
-        "TODO: libpysal.examples.load_example(name)을 사용하여 "
-        "shapefile + dbf 로드, return_gdf에 따라 반환형 결정"
-    )
+    from libpysal.examples import load_example as _pysal_load
+
+    # libpysal 예제명 + shapefile 매핑
+    mapping = {
+        "columbus": ("Columbus", "columbus.shp"),
+        "baltim": ("Baltimore", "baltim.shp"),
+        "nat": ("NAT", "NAT.shp"),
+        "ncovr": ("NAT", "NAT.shp"),
+        "boston": ("Bostonhsg", "bostonhsg.shp"),
+    }
+    if name not in mapping:
+        raise ValueError(
+            f"지원하지 않는 데이터셋: {name!r}. "
+            f"{list(mapping)} 중 선택."
+        )
+
+    proper, shp = mapping[name]
+    example = _pysal_load(proper)
+    path = example.get_path(shp)
+    gdf = gpd.read_file(path)
+
+    if return_gdf:
+        return gdf
+    return pd.DataFrame(gdf.drop(columns="geometry"))
 
 
 def describe_dataset(name: DatasetName) -> dict:
@@ -66,9 +86,27 @@ def describe_dataset(name: DatasetName) -> dict:
             'citation': str,
         }
     """
-    raise NotImplementedError(
-        "TODO: 각 데이터셋 메타정보를 dict 반환 (하드코딩)"
-    )
+    meta = {
+        "columbus": dict(n_obs=49, n_vars=21, geometry_type="Polygon"),
+        "baltim": dict(n_obs=211, n_vars=17, geometry_type="Point"),
+        "nat": dict(n_obs=3085, n_vars=69, geometry_type="Polygon"),
+        "ncovr": dict(n_obs=3085, n_vars=69, geometry_type="Polygon"),
+        "boston": dict(n_obs=506, n_vars=23, geometry_type="Polygon"),
+    }
+    if name not in meta:
+        raise ValueError(f"지원하지 않는 데이터셋: {name!r}")
+
+    info = DATASET_INFO.get(name, {})
+    m = meta[name]
+    return {
+        "name": name,
+        "n_obs": m["n_obs"],
+        "n_vars": m["n_vars"],
+        "geometry_type": m["geometry_type"],
+        "crs": "EPSG:4326",
+        "key_variables": info.get("key_vars", []),
+        "citation": info.get("citation", ""),
+    }
 
 
 # ----------------------------------------------------------------------
