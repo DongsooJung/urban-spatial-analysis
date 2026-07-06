@@ -16,8 +16,8 @@ from __future__ import annotations
 import logging
 from typing import Literal
 
-import pandas as pd
 import geopandas as gpd
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ def load_example(
         >>> gdf.columns.tolist()[:5]
         ['AREA', 'PERIMETER', 'COLUMBUS_', 'COLUMBUS_I', 'POLYID']
     """
-    from libpysal.examples import load_example as _pysal_load
+    import libpysal.examples as _examples
 
     # libpysal 예제명 + shapefile 매핑
     mapping = {
@@ -62,8 +62,15 @@ def load_example(
         )
 
     proper, shp = mapping[name]
-    example = _pysal_load(proper)
-    path = example.get_path(shp)
+    # 1) 내장 예제(columbus, baltim 등)는 네트워크 없이 즉시 사용 가능
+    try:
+        path = _examples.get_path(shp)
+    except Exception:
+        path = None
+    if path is None:
+        # 2) 원격 예제(NAT 등)는 최초 1회 다운로드 (네트워크 필요)
+        example = _examples.load_example(proper)
+        path = example.get_path(shp)
     gdf = gpd.read_file(path)
 
     if return_gdf:
@@ -126,6 +133,11 @@ DATASET_INFO = {
     "nat": {
         "description": "3,085 US counties, homicide 1960-1990",
         "key_vars": ["HR60", "HR70", "HR80", "HR90", "PO60-PO90"],
+        "citation": "Messner & Anselin (1999)",
+    },
+    "ncovr": {
+        "description": "NCOVR — same extent as NAT (3,085 US counties)",
+        "key_vars": ["HR60", "HR70", "HR80", "HR90"],
         "citation": "Messner & Anselin (1999)",
     },
     "boston": {

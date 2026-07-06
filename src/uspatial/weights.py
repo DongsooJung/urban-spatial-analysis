@@ -14,11 +14,11 @@ PySAL의 libpysal.weights 래퍼. 5가지 방식 지원:
 from __future__ import annotations
 
 import logging
-from typing import Literal, Optional
+from typing import Literal
 
-import numpy as np
 import geopandas as gpd
-from libpysal.weights import W, Queen, Rook, KNN, DistanceBand, Kernel
+import numpy as np
+from libpysal.weights import KNN, DistanceBand, Kernel, Queen, Rook, W
 
 logger = logging.getLogger(__name__)
 
@@ -29,9 +29,9 @@ def build_weights(
     gdf: gpd.GeoDataFrame,
     method: WeightType = "queen",
     k: int = 8,
-    threshold: Optional[float] = None,
+    threshold: float | None = None,
     kernel_function: str = "triangular",
-    bandwidth: Optional[float] = None,
+    bandwidth: float | None = None,
     row_standardize: bool = True,
 ) -> W:
     """

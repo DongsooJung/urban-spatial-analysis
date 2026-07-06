@@ -3,6 +3,7 @@
 > 파이썬과 GIS 기반 도시정책 평가용 공간계량 모형
 > Spatial econometric models for urban policy evaluation using Python and GIS
 
+[![CI](https://github.com/DongsooJung/urban-spatial-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/DongsooJung/urban-spatial-analysis/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
 [![PySAL](https://img.shields.io/badge/PySAL-spreg%20%C2%B7%20esda-orange?style=flat-square)](https://pysal.org)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
@@ -34,18 +35,19 @@ Urban data — property values, crime rates, infrastructure quality — exhibits
 ```
 urban-spatial-analysis/
 ├── src/uspatial/
-│   ├── weights.py              # 공간 가중행렬 (W) 구축
-│   ├── models.py               # SLM, SEM, SDM, GWR 래퍼
-│   ├── diagnostics.py          # Moran's I, LM 검정, LISA
-│   ├── data.py                 # 데이터 로딩·전처리
-│   └── visualization.py        # Choropleth · 군집 지도
+│   ├── weights.py              # 공간 가중행렬 (W) 구축 — Queen/Rook/KNN/Distance/Kernel
+│   ├── models.py               # OLS·SLM·SEM·SDM·GWR 통합 인터페이스 + impacts 분해
+│   ├── diagnostics.py          # Moran's I, LISA, LM 검정, VIF, Chow
+│   ├── data.py                 # 예제 데이터 로더 (Columbus, Baltimore, NAT, Boston)
+│   └── visualization.py        # Choropleth · Moran scatter · LISA · GWR 계수 지도
 ├── notebooks/
-│   └── 01_columbus_full_analysis.ipynb   # 전체 분석 워크플로(Columbus 예제)
+│   └── 01_columbus_full_analysis.ipynb   # 전체 분석 워크플로(Columbus 예제, 실행 완료)
+├── tests/                      # pytest — weights/models/diagnostics/data (55 tests)
 ├── data/README.md              # 데이터 출처 및 다운로드 안내
 ├── docs/ARCHITECTURE.md        # 설계·방법론 문서
-├── tests/test_weights.py
+├── .github/workflows/ci.yml    # CI — ruff lint + pytest (Python 3.11/3.12)
+├── pyproject.toml              # 패키지 메타데이터·의존성
 ├── CONTRIBUTING.md
-├── requirements.txt
 └── LICENSE
 ```
 
@@ -54,8 +56,30 @@ urban-spatial-analysis/
 ```bash
 git clone https://github.com/DongsooJung/urban-spatial-analysis.git
 cd urban-spatial-analysis
-pip install -r requirements.txt
+pip install -e ".[dev,notebooks]"
+
+# 전체 워크플로 노트북 실행
 jupyter notebook notebooks/01_columbus_full_analysis.ipynb
+```
+
+```python
+from uspatial import SpatialModel, build_weights, load_example, morans_i
+
+gdf = load_example("columbus")                       # 49개 Columbus 구역
+w = build_weights(gdf, method="queen")               # Queen 인접 가중행렬
+
+mi = morans_i(gdf["CRIME"].values, w)                # 전역 공간 자기상관
+print(mi.interpret())                                # I ≈ 0.5, p < 0.001
+
+sem = SpatialModel(gdf, y="CRIME", X=["INC", "HOVAL"], w=w, method="SEM").fit()
+print(sem.summary())
+```
+
+## 테스트 · Testing
+
+```bash
+pytest          # 55개 테스트 (Columbus 벤치마크 회귀 검증 포함)
+ruff check src tests
 ```
 
 ## 연구 맥락 · Research Context
