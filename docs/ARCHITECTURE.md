@@ -19,10 +19,11 @@ urban-spatial-analysis/
 ├── notebooks/
 │   └── 01_columbus_full_analysis.ipynb  # 8단계 전 과정 시연
 │
-├── data/                  # 원본·가공 데이터
-├── tests/                 # pytest
+├── tests/                 # pytest — weights/models/diagnostics/data
+├── data/                  # 원본·가공 데이터 안내
 ├── docs/                  # 방법론 문서
-└── scripts/               # CLI 실행 스크립트
+├── .github/workflows/     # CI (ruff + pytest)
+└── pyproject.toml         # 패키지 정의
 ```
 
 ---
