@@ -29,13 +29,30 @@ __version__ = "0.1.0"
 __author__ = "Dongsoo Jung"
 __email__ = "jds068888@gmail.com"
 
-from uspatial.models import SpatialModel  # noqa: F401
-from uspatial.weights import build_weights  # noqa: F401
-from uspatial.diagnostics import morans_i, lm_diagnostics  # noqa: F401
+from uspatial.data import describe_dataset, load_example  # noqa: F401
+from uspatial.diagnostics import (  # noqa: F401
+    lm_diagnostics,
+    local_moran,
+    morans_i,
+)
+from uspatial.models import (  # noqa: F401
+    SpatialModel,
+    SpatialResults,
+    compare_models,
+    impacts_decomposition,
+)
+from uspatial.weights import build_weights, weights_summary  # noqa: F401
 
 __all__ = [
     "SpatialModel",
+    "SpatialResults",
+    "compare_models",
+    "impacts_decomposition",
     "build_weights",
+    "weights_summary",
     "morans_i",
+    "local_moran",
     "lm_diagnostics",
+    "load_example",
+    "describe_dataset",
 ]

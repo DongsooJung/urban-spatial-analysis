@@ -1,52 +1,21 @@
 """공간가중행렬 테스트 — build_weights / weights_summary / auto_distance_threshold.
 
-공간계량 스택(geopandas/libpysal)이 없으면 모듈 전체를 skip.
+공간계량 스택(geopandas/libpysal)이 없으면 전체 skip (conftest.py).
 Columbus 예제는 최초 1회 libpysal이 다운로드한다(네트워크 필요).
 """
 import sys
-from pathlib import Path
 
-import pytest
 import numpy as np
+import pytest
 
 gpd = pytest.importorskip("geopandas")
-pytest.importorskip("libpysal")
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from uspatial.weights import (
+from uspatial.weights import (  # noqa: E402
+    auto_distance_threshold,
     build_weights,
     weights_summary,
-    auto_distance_threshold,
     weights_to_matrix,
 )
-from uspatial.data import load_example, describe_dataset
-
-
-@pytest.fixture(scope="module")
-def columbus_gdf():
-    """Columbus 내장 예제 데이터 (49 폴리곤)."""
-    try:
-        return load_example("columbus")
-    except Exception as e:  # 네트워크 불가 등
-        pytest.skip(f"Columbus 로드 실패: {e}")
-
-
-class TestLoadExample:
-    def test_columbus_shape(self, columbus_gdf):
-        assert columbus_gdf.shape[0] == 49
-
-    def test_columbus_is_polygon(self, columbus_gdf):
-        assert set(columbus_gdf.geom_type.unique()) <= {"Polygon", "MultiPolygon"}
-
-    def test_invalid_dataset_raises(self):
-        with pytest.raises(ValueError):
-            load_example("nonexistent")
-
-    def test_describe_keys(self):
-        d = describe_dataset("columbus")
-        assert d["n_obs"] == 49
-        assert set(d.keys()) >= {"name", "n_obs", "geometry_type", "citation"}
 
 
 class TestBuildWeights:
