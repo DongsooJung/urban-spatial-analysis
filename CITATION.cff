@@ -1,20 +1,22 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "urban-spatial-analysis"
+title: "urban-spatial-analysis: Spatial econometric models for urban policy evaluation"
 abstract: >-
-  Spatial econometric models for urban policy evaluation: spatial weight matrix construction and SLM, SEM, SDM and GWR estimation on Korean urban data with PySAL.
+  Python and GIS code for spatial econometric analysis of urban policy:
+  spatial weights, diagnostics, and policy-evaluation models built on PySAL.
 type: software
 version: 0.1.0
-date-released: "2026-11-23"
+date-released: "2026-11-25"
 license: MIT
 repository-code: "https://github.com/DongsooJung/urban-spatial-analysis"
 keywords:
-  - spatial-econometrics
-  - pysal
-  - gwr
-  - urban-planning
-  - smart-city
-  - python
+  - spatial analysis
+  - spatial econometrics
+  - GIS
+  - PySAL
+  - urban planning
+  - smart city
+  - reproducibility
 authors:
   - family-names: Jung
     given-names: Dongsoo
